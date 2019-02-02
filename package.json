@@ -1,0 +1,47 @@
+{
+  "name": "enterprise",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf dist && babel src -d dist",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "serve": "yarn run build && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon -w src --exec yarn run serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DmitryMarkov/enterprise-js.git"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint"
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DmitryMarkov/enterprise-js/issues"
+  },
+  "homepage": "https://github.com/DmitryMarkov/enterprise-js#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-syntax-optional-chaining": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
+    "eslint": "^5.13.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^1.3.1",
+    "nodemon": "^1.18.9",
+    "rimraf": "^2.6.3"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5"
+  }
+}
