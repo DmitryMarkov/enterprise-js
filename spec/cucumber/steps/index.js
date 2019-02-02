@@ -1,9 +1,13 @@
-import { AssertionError } from 'assert'
+import assert from 'assert'
+import { config } from 'dotenv'
 import superagent from 'superagent'
 import { When, Then } from 'cucumber'
 
+const env = config()
+
 When('the client creates a POST request to /users', function () {
-  this.request = superagent('POST', 'localhost:8080/users')
+  console.log(env)
+  this.request = superagent('POST', `localhost:8080/users`)
 })
 
 When('attaches a generic empty payload', () => {
@@ -23,12 +27,7 @@ When('sends the request', function (cb) {
 })
 
 Then('our API should respond with a 400 HTTP status code', function () {
-  if (this.response.statusCode !== 400) {
-    throw new AssertionError({
-      expected: 400,
-      actual: this.response.statusCode
-    })
-  }
+  assert.strict.equal(this.response.statusCode, 400)
 })
 
 Then('the payload of the response should be a JSON object', function () {
@@ -44,7 +43,5 @@ Then('the payload of the response should be a JSON object', function () {
 })
 
 Then('contains a message property which says "Payload should not be empty"', function () {
-  if (this.responsePayload.message !== 'Payload should not be empty') {
-    throw new Error()
-  }
+  assert.strict.equal(this.responsePayload.message, 'Payload should not be empty')
 })

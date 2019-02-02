@@ -16,4 +16,4 @@ const requestHandler = function (req, res) {
   res.end('Simplest HTTP server!')
 }
 const server = http.createServer(requestHandler)
-server.listen(8080)
+server.listen(process.env.SERVER_PORT)
