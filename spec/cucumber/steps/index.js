@@ -5,15 +5,34 @@ import { When, Then } from 'cucumber'
 
 const env = config().parsed
 
-When(/^the client creates a POST request to \/users$/, function() {
-  // console.log(process.env)
-  this.request = superagent(
-    'POST',
-    `${env.SERVER_HOSTNAME}:${env.SERVER_PORT}/users`
-  )
-})
+When(
+  /^the client creates a (GET|POST|PATCH|PUT|DELETE|OPTIONS|HEAD) request to ([/\w-:.]+)$/,
+  function(method, path) {
+    // console.log(process.env)
+    this.request = superagent(
+      method,
+      `${env.SERVER_HOSTNAME}:${env.SERVER_PORT}${path}`
+    )
+  }
+)
 
-When(/^attaches a generic empty payload$/, () => {
+When(/^attaches a generic (.+) payload$/, function(payloadType) {
+  switch (payloadType) {
+    case 'malformed':
+      this.request
+        .send('{ "email": "test@test.com", name: }')
+        .set('Content-Type', 'application/json')
+      break
+    case 'non-JSON':
+      this.request
+        .send(
+          '<?xml version="1.0 encoding="UTF-8" ?><email>test@test.com</email>'
+        )
+        .set('Content-Type', 'text/xml')
+      break
+    case 'empty':
+    default:
+  }
   return undefined
 })
 
@@ -29,9 +48,12 @@ When(/^sends the request$/, function(cb) {
     })
 })
 
-Then(/^our API should respond with a 400 HTTP status code$/, function() {
-  assert.strict.equal(this.response.statusCode, 400)
-})
+Then(
+  /^our API should respond with a ([1-5]\d{2}) HTTP status code$/,
+  function(statusCode) {
+    assert.strict.equal(this.response.statusCode, +statusCode)
+  }
+)
 
 Then(/^the payload of the response should be a JSON object$/, function() {
   const contentType =
@@ -48,47 +70,8 @@ Then(/^the payload of the response should be a JSON object$/, function() {
 })
 
 Then(
-  /^contains a message property which says "Payload should not be empty"$/,
-  function() {
-    assert.strict.equal(
-      this.responsePayload.message,
-      'Payload should not be empty'
-    )
-  }
-)
-
-When(/^attaches a generic non-JSON payload$/, function() {
-  this.request.send(
-    '<?xml version="1.0 encoding="UTF-8" ?><email>test@test.com</email>'
-  )
-  this.request.set('Content-Type', 'text/xml')
-})
-
-When(/^attaches a generic malformed payload$/, function() {
-  this.request.send('{ "email": "test@test.com", name: }')
-  this.request.set('Content-Type', 'application/json')
-})
-
-Then(/^our API should respond with a 415 HTTP status code$/, function() {
-  assert.strict.equal(this.response.statusCode, 415)
-})
-
-Then(
-  /^contains a message property which says 'The "Content-Type" header must always be "application\/json"'$/,
-  function() {
-    assert.strict.equal(
-      this.responsePayload.message,
-      'The "Content-Type" header must always be "application/json"'
-    )
-  }
-)
-
-Then(
-  /^contains a message property which says "Payload should be in JSON format"$/,
-  function() {
-    assert.strict.equal(
-      this.responsePayload.message,
-      'Payload should be in JSON format'
-    )
+  /^contains a message property which says (?:"|')(.*)(?:"|')$/,
+  function(message) {
+    assert.strict.equal(this.responsePayload.message, message)
   }
 )
