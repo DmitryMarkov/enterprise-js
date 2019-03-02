@@ -3,11 +3,11 @@ import { config } from 'dotenv'
 import superagent from 'superagent'
 import { When, Then } from 'cucumber'
 
-const env = config()
+const env = config().parsed
 
 When('the client creates a POST request to /users', function () {
-  console.log(env)
-  this.request = superagent('POST', `localhost:8080/users`)
+  // console.log(env)
+  this.request = superagent('POST', `${env.SERVER_HOSTNAME}:${env.SERVER_PORT}/users`)
 })
 
 When('attaches a generic empty payload', () => {
