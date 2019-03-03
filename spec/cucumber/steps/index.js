@@ -2,6 +2,7 @@ import assert from 'assert'
 import { config } from 'dotenv'
 import superagent from 'superagent'
 import { When, Then } from 'cucumber'
+import { convertStringToArray, getValidPayload } from './utils'
 
 const env = config().parsed
 
@@ -55,17 +56,11 @@ When(/^without a (?:"|')([\w-]+)(?:"|') header set$/, function(headerName) {
 When(
   /^attaches an? (.+) payload which is missing the ([a-zA-Z0-9, ]+) fields?$/,
   function(payloadType, missingFields) {
-    const payload = {
-      email: 'test@test.com',
-      password: 'password',
-    }
-    const fieldsToDelete = missingFields
-      .split(' , ')
-      .map(string => string.trim())
-      .filter(string => string !== '')
-    fieldsToDelete.forEach(field => delete payload[field])
+    this.requestPayload = getValidPayload(payloadType)
+    const fieldsToDelete = convertStringToArray(missingFields)
+    fieldsToDelete.forEach(field => delete this.requestPayload[field])
     this.request
-      .send(JSON.stringify(payload))
+      .send(JSON.stringify(this.requestPayload))
       .set('Content-Type', 'application/json')
   }
 )
@@ -73,24 +68,18 @@ When(
 When(
   /^attaches an? (.+) payload where the ([a-zA-Z0-9, ]+) fields? (?:is|are)(\s+not)? a ([a-zA-Z]+)$/,
   function(payloadType, fields, invert, type) {
-    const payload = {
-      email: 'test@test.com',
-      password: 'password',
-    }
+    this.requestPayload = getValidPayload(payloadType)
     const typeKey = type.toLowerCase()
     const invertKey = invert ? 'not' : 'is'
     const sampleValues = {
       string: { is: 'string', not: 500 },
     }
-    const fieldsToModify = fields
-      .split(' , ')
-      .map(string => string.trim())
-      .filter(string => string !== '')
+    const fieldsToModify = convertStringToArray(fields)
     fieldsToModify.forEach(field => {
-      payload[field] = sampleValues[typeKey][invertKey]
+      this.requestPayload[field] = sampleValues[typeKey][invertKey]
     })
     this.request
-      .send(JSON.stringify(payload))
+      .send(JSON.stringify(this.requestPayload))
       .set('Content-Type', 'application/json')
   }
 )
@@ -98,19 +87,13 @@ When(
 When(
   /^attaches an? (.+) payload where the ([a-zA-Z0-9, ]+) fields? (?:is|are) exactly (.+)$/,
   function(payloadType, fields, value) {
-    const payload = {
-      email: 'test@test.com',
-      password: 'password',
-    }
-    const fieldsToModify = fields
-      .split(' , ')
-      .map(string => string.trim())
-      .filter(string => string !== '')
+    this.requestPayload = getValidPayload(payloadType)
+    const fieldsToModify = convertStringToArray(fields)
     fieldsToModify.forEach(field => {
-      payload[field] = value
+      this.requestPayload[field] = value
     })
     this.request
-      .send(JSON.stringify(payload))
+      .send(JSON.stringify(this.requestPayload))
       .set('Content-Type', 'application/json')
   }
 )
