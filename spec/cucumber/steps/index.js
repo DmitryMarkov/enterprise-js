@@ -8,18 +8,16 @@ import { convertStringToArray, getValidPayload } from './utils'
 const env = config().parsed
 
 const client = new elasticsearch.Client({
-  host: `${env.ELASTICSEARCH_PROTOCOL}://${env.ELASTICSEARCH_HOSTNAME}:${
-    env.ELASTICSEARCH_PORT
-  }`,
+  host: `${env.ELASTICSEARCH_HOSTNAME}:${env.ELASTICSEARCH_PORT}`,
 })
 
 When(
   /^the client creates a (GET|POST|PATCH|PUT|DELETE|OPTIONS|HEAD) request to ([/\w-:.]+)$/,
   function(method, path) {
-    // console.log(process.env)
+    // console.log(env.NODE_ENV)
     this.request = superagent(
       method,
-      `${env.SERVER_HOSTNAME}:${env.SERVER_PORT}${path}`
+      `${env.SERVER_HOSTNAME}:${env.SERVER_PORT_TEST}${path}`
     )
   }
 )
@@ -159,7 +157,7 @@ Then(
     this.type = type
     client
       .get({
-        index: 'hobnob',
+        index: env.ELASTICSEARCH_INDEX_TEST,
         type,
         id: this.responsePayload,
       })
@@ -174,7 +172,7 @@ Then(
 Then(/^the newly-created user should be deleted$/, function(callback) {
   client
     .delete({
-      index: 'hobnob',
+      index: env.ELASTICSEARCH_INDEX_TEST,
       type: this.type,
       id: this.responsePayload,
     })
