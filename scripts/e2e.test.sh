@@ -4,36 +4,34 @@
 export $(cat .env | grep -v "^#" | xargs)
 export NODE_ENV=test
 
-# Clean the test index (if it exists)
-curl --silent -o /dev/null -X DELETE "$ELASTICSEARCH_HOSTNAME:$ELASTICSEARCH_PORT/$ELASTICSEARCH_INDEX_TEST"
+# Make sure the port is not already bound
+if ss -lnt | grep -q :$SERVER_PORT_TEST; then
+   echo "Another process is already listening to port $SERVER_PORT_TEST"
+   exit 1;
+fi
+
+RETRY_INTERVAL=${RETRY_INTERVAL:-0.2}
+
+# start Elasticsearch if not running
+if ! systemctl is-active --quiet elasticsearch.service; then
+   sudo systemctl start elasticsearch.service
+   
+   # Clean the test index (if it exists)
+   until curl --silent -o /dev/null -X DELETE "$ELASTICSEARCH_HOSTNAME:$ELASTICSEARCH_PORT/$ELASTICSEARCH_INDEX_TEST"; do
+      sleep $RETRY_INTERVAL
+   done
+fi
 
 # Run our API server as a background process
 yarn run serve &
 
-# Polling to see if the server is up and running yet
-TRIES=0
-RETRY_LIMIT=50
-RETRY_INTERVAL=0.2
-SERVER_UP=false
-while [ $TRIES -lt $RETRY_LIMIT ]; do
-  if netstat -tulpn 2>/dev/null | grep -q ":$SERVER_PORT_TEST.*LISTEN"; then
-    SERVER_UP=true
-    break
-  else
-    sleep $RETRY_INTERVAL
-    let TRIES=TRIES+1
-  fi
+# Wait until it run
+until ss -lnt | grep -q :$SERVER_PORT_TEST; do
+   sleep $RETRY_INTERVAL
 done
 
-# Only run this if API server is operational
-if $SERVER_UP; then
-  # Run the test in the background
-  # npx dotenv cucumberjs spec/cucumber/features -- --compiler js:babel-register --require spec/cucumber/steps &
-  cucumber-js spec/cucumber/features --require-module @babel/register --require spec/cucumber/steps
-  
-  # Waits for the next job to terminate - this should be the tests
-  wait -n
-fi
+# Run the test in the background
+cucumber-js spec/cucumber/features --require-module @babel/register --require spec/cucumber/steps
 
 # Terminate all processes within the same process group by sending a SIGTERM signal
 kill -15 0

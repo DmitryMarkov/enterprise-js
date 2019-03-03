@@ -17,7 +17,7 @@ const client = new elasticsearch.Client({
   }`,
 })
 
-console.log(process.env.NODE_ENV)
+// console.log(process.env.NODE_ENV)
 
 if (process.env.NODE_ENV === 'test') {
   process.env.ELASTICSEARCH_INDEX = process.env.ELASTICSEARCH_INDEX_TEST
@@ -32,7 +32,7 @@ app.use(checkEmptyPayload)
 app.use(checkContentTypeIsSet)
 app.use(checkContentTypeIsJson)
 
-app.post('/users/', (req, res, next) => {
+app.post('/users/', (req, res) => {
   if (
     !Object.prototype.hasOwnProperty.call(req.body, 'email') ||
     !Object.prototype.hasOwnProperty.call(req.body, 'password')
