@@ -48,6 +48,10 @@ When(/^sends the request$/, function(cb) {
     })
 })
 
+When(/^without a (?:"|')([\w-]+)(?:"|') header set$/, function(headerName) {
+  this.request.unset(headerName)
+})
+
 Then(
   /^our API should respond with a ([1-5]\d{2}) HTTP status code$/,
   function(statusCode) {
