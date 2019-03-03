@@ -52,6 +52,17 @@ app.use(checkContentTypeIsJson)
 app.use(bodyParser.json({ limit: 1e6 }))
 
 app.post('/users/', (req, res, next) => {
+  if (
+    !Object.prototype.hasOwnProperty.call(req.body, 'email') ||
+    !Object.prototype.hasOwnProperty.call(req.body, 'password')
+  ) {
+    res.status(400)
+    res.set('Content-Type', 'application/json')
+    res.json({
+      message:
+        'Payload must contain at least the email and password fields',
+    })
+  }
   next()
 })
 
