@@ -1,8 +1,15 @@
 import '@babel/polyfill'
 import express from 'express'
 import bodyParser from 'body-parser'
+import elasticsearch from 'elasticsearch'
 
 const app = express()
+
+const client = new elasticsearch.Client({
+  host: `${process.env.ELASTICSEARCH_PROTOCOL}://${
+    process.env.ELASTICSEARCH_HOSTNAME
+  }:${process.env.ELASTICSEARCH_PORT}`,
+})
 
 function checkEmptyPayload(req, res, next) {
   if (
@@ -80,7 +87,24 @@ app.post('/users/', (req, res, next) => {
       message: 'The email field must be a valid email',
     })
   }
-  next()
+  client
+    .index({
+      index: 'hobnob',
+      type: 'user',
+      body: req.body,
+    })
+    .then(result => {
+      res.status(201)
+      res.set('Content-Type', 'text/plain')
+      res.send(result._id)
+    })
+    .catch(() => {
+      res.status(500)
+      res.set('Content-Type', 'application/json')
+      res.json({
+        message: 'Internal Server Error',
+      })
+    })
 })
 
 app.use((err, req, res, next) => {

@@ -9,6 +9,7 @@
     "lint:fix": "eslint src --fix",
     "ndb": "ndb",
     "serve": "yarn run build && dotenv node dist/index.js",
+    "start": "yarn run watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:e2e": "cucumber-js spec/cucumber/features --require-module @babel/register --require spec/cucumber/steps",
     "watch": "nodemon -w src --exec yarn run serve"
@@ -54,6 +55,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "body-parser": "^1.18.3",
+    "elasticsearch": "^15.4.1",
     "express": "^4.16.4"
   }
 }
