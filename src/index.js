@@ -2,12 +2,14 @@ import '@babel/polyfill'
 import express from 'express'
 import bodyParser from 'body-parser'
 import elasticsearch from 'elasticsearch'
+import createUser from './handlers/users/create'
 import {
   checkContentTypeIsJson,
   checkContentTypeIsSet,
   checkEmptyPayload,
 } from './middleware'
 import { errorHandler } from './middleware/errorHandler'
+import injectHandlerDependencies from './utils/injectHandlerDependencies'
 
 const app = express()
 
@@ -32,60 +34,7 @@ app.use(checkEmptyPayload)
 app.use(checkContentTypeIsSet)
 app.use(checkContentTypeIsJson)
 
-app.post('/users/', (req, res) => {
-  if (
-    !Object.prototype.hasOwnProperty.call(req.body, 'email') ||
-    !Object.prototype.hasOwnProperty.call(req.body, 'password')
-  ) {
-    res.status(400)
-    res.set('Content-Type', 'application/json')
-    res.json({
-      message:
-        'Payload must contain at least the email and password fields',
-    })
-    return
-  }
-  if (
-    typeof req.body.email !== 'string' ||
-    typeof req.body.password !== 'string'
-  ) {
-    res.status(400)
-    res.set('Content-Type', 'application/json')
-    res.json({
-      message: 'The email and password fields must be of type string',
-    })
-    return
-  }
-  if (!/^[\w.+]+@\w+\.\w+$/.test(req.body.email)) {
-    res.status(400)
-    res.set('Content-Type', 'application/json')
-    res.json({
-      message: 'The email field must be a valid email',
-    })
-    return
-  }
-  client
-    .index({
-      index: process.env.ELASTICSEARCH_INDEX,
-      type: 'user',
-      body: req.body,
-    })
-    .then(
-      function(result) {
-        res.status(201)
-        res.set('Content-Type', 'text/plain')
-        res.send(result._id)
-      },
-      function(err) {
-        res.status(500)
-        res.set('Content-Type', 'application/json')
-        res.json({
-          message: 'Internal Server Error',
-          error: err,
-        })
-      }
-    )
-})
+app.post('/users/', injectHandlerDependencies(createUser, client))
 
 app.use(errorHandler)
 
