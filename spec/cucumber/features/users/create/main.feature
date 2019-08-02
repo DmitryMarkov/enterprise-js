@@ -73,3 +73,20 @@ Feature: Create User
       And the payload of the response should be a string
       And the payload object should be added to the database, grouped under the "user" type
       And the newly-created user should be deleted
+
+   Scenario Outline: Invalid profile
+
+      When the client creates a POST request to /users/
+      And attaches <payload> as the payload
+      And sends the request
+      Then our API should respond with a 400 HTTP status code
+      And the payload of the response should be a JSON object
+      And contains a message property which says "The profile provided is invalid"
+
+      Examples:
+
+         | payload                                                                          |
+         | {"email":"e@ma.il","password":"abc","profile":{"foo":"bar"}}                     |
+         | {"email":"e@ma.il","password":"abc","profile":{"name":{"first":"Jane","a":"b"}}} |
+         | {"email":"e@ma.il","password":"abc","profile":{"summary":0}}                     |
+         | {"email":"e@ma.il","password":"abc","profile":{"bio":0}}                         |

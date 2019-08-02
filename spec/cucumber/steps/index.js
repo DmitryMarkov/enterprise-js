@@ -110,6 +110,11 @@ When(/^attaches a valid (.+) payload$/, function(payloadType) {
     .set('Content-Type', 'application/json')
 })
 
+When(/^attaches (.+) as the payload$/, function(payload) {
+  this.requestPayload = JSON.parse(payload)
+  this.request.send(payload).set('Content-Type', 'application/json')
+})
+
 Then(
   /^our API should respond with a ([1-5]\d{2}) HTTP status code$/,
   function(statusCode) {
