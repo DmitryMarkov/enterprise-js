@@ -1,6 +1,6 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "http://example.com/schemas/users/profile.json",
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "http://api.stylive.com/schemas/users/profile.json",
   "title": "User Profile Schema",
   "description": "For validating client-provided user profile object when creating and/or updating user",
   "type": "object",

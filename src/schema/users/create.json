@@ -1,6 +1,6 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "http://example.com/schemas/users/create.json",
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "http://api.stylive.com/schemas/users/create.json",
   "title": "Create User Schema",
   "description": "For validating client-provided create user object",
   "type": "object",

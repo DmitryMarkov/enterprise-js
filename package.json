@@ -4,7 +4,7 @@
   "description": "Sample enterprise full-stack project",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && babel src -d dist",
+    "build": "rimraf dist && babel src -d dist --copy-files",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "ndb": "ndb",

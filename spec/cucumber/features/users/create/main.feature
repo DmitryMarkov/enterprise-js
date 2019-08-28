@@ -27,13 +27,13 @@ Feature: Create User
       And sends the request
       Then our API should respond with a 400 HTTP status code
       And the payload of the response should be a JSON object
-      And contains a message property which says "Payload must contain at least the email and password fields"
+      And contains a message property which says "<message>"
 
       Examples:
 
-         | missingField |
-         | email        |
-         | password     |
+         | missingField | message                           |
+         | email        | The '.email' field is missing.    |
+         | password     | The '.password' field is missing. |
 
    Scenario Outline: Request Payload with Properties of Unsupported Type
 
@@ -42,7 +42,7 @@ Feature: Create User
       And sends the request
       Then our API should respond with a 400 HTTP status code
       And the payload of the response should be a JSON object
-      And contains a message property which says "The email and password fields must be of type string"
+      And contains a message property which says "The '.<field>' field must be of type <type>."
 
       Examples:
          | field    | type   |
@@ -55,7 +55,7 @@ Feature: Create User
       And sends the request
       Then our API should respond with a 400 HTTP status code
       And the payload of the response should be a JSON object
-      And contains a message property which says "The email field must be a valid email"
+      And contains a message property which says "The '.email' field must be a valid email."
 
       Examples:
 
@@ -81,7 +81,7 @@ Feature: Create User
       And sends the request
       Then our API should respond with a 400 HTTP status code
       And the payload of the response should be a JSON object
-      And contains a message property which says "The profile provided is invalid"
+      And contains a message property which says "The profile provided is invalid."
 
       Examples:
 
@@ -90,3 +90,22 @@ Feature: Create User
          | {"email":"e@ma.il","password":"abc","profile":{"name":{"first":"Jane","a":"b"}}} |
          | {"email":"e@ma.il","password":"abc","profile":{"summary":0}}                     |
          | {"email":"e@ma.il","password":"abc","profile":{"bio":0}}                         |
+
+   Scenario Outline: Valid Profile
+
+      When the client creates a POST request to /users/
+      And attaches <payload> as the payload
+      And sends the request
+      Then our API should respond with a 201 HTTP status code
+      And the payload of the response should be a string
+      And the payload object should be added to the database, grouped under the "user" type
+      And the newly-created user should be deleted
+
+      Examples:
+
+         | payload                                                                         |
+         | {"email":"e@ma.il","password":"password","profile":{}}                          |
+         | {"email":"e@ma.il","password":"password","profile":{"name":{}}}                 |
+         | {"email":"e@ma.il","password":"password","profile":{"name":{"first":"Daniel"}}} |
+         | {"email":"e@ma.il","password":"password","profile":{"bio":"bio"}}               |
+         | {"email":"e@ma.il","password":"password","profile":{"summary":"summary"}}       |
