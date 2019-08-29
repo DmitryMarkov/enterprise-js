@@ -11,8 +11,9 @@
     "prettier": "prettier --write src",
     "serve": "yarn run build && dotenv node dist/index.js",
     "start": "yarn run watch",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "yarn run test:unit && yarn run test:e2e",
     "test:e2e": "./scripts/e2e.test.sh",
+    "test:unit": "mocha 'src/**/*.test.js' --require @babel/register",
     "watch": "nodemon -w src --exec yarn run serve"
   },
   "repository": {
