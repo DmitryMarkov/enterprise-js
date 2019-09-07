@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { stub } from 'sinon'
 import ValidationError from '../../../validators/errors/validationError'
-import createUser from './index'
+// import createUser from './index'
 
 const createStubs = {
   success: stub().resolves({ _id: 'foo' }),
