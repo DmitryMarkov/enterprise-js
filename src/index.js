@@ -2,7 +2,9 @@ import '@babel/polyfill'
 import express from 'express'
 import bodyParser from 'body-parser'
 import elasticsearch from 'elasticsearch'
-import createUser from './handlers/users/create'
+import ValidationError from './validators/errors/validationError'
+import createUserEngine from './engines/users/create'
+import createUserHandler from './handlers/users/create'
 import {
   checkContentTypeIsJson,
   checkContentTypeIsSet,
@@ -11,12 +13,12 @@ import {
 import { errorHandler } from './middleware/errorHandler'
 import injectHandlerDependencies from './utils/injectHandlerDependencies'
 
+const handlerToEngineMap = new Map([[createUserHandler, createUserEngine]])
+
 const app = express()
 
 const client = new elasticsearch.Client({
-  host: `${process.env.ELASTICSEARCH_HOSTNAME}:${
-    process.env.ELASTICSEARCH_PORT
-  }`,
+  host: `${process.env.ELASTICSEARCH_HOSTNAME}:${process.env.ELASTICSEARCH_PORT}`,
 })
 
 // console.log(process.env.NODE_ENV)
@@ -34,7 +36,15 @@ app.use(checkEmptyPayload)
 app.use(checkContentTypeIsSet)
 app.use(checkContentTypeIsJson)
 
-app.post('/users/', injectHandlerDependencies(createUser, client))
+app.post(
+  '/users/',
+  injectHandlerDependencies(
+    createUserHandler,
+    client,
+    handlerToEngineMap,
+    ValidationError
+  )
+)
 
 app.use(errorHandler)
 
