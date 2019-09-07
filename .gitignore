@@ -1,5 +1,6 @@
 .env
 .vscode
 .idea/**/*.*
+coverage
 dist
 node_modules

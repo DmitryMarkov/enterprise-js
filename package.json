@@ -12,9 +12,14 @@
     "serve": "yarn run build && dotenv node dist/index.js",
     "start": "yarn run watch",
     "test": "yarn run test:unit && yarn run test:e2e",
+    "test:coverage": "nyc --reporter=html --reporter=text yarn run test",
+    "test:integration:coverage": "nyc --reporter=html --reporter=text yarn run test:integration",
+    "test:e2e:coverage": "nyc --reporter=html --reporter=text yarn run test:e2e",
     "test:e2e": "./scripts/e2e.test.sh",
-    "test:unit": "mocha 'src/**/*.test.js' --require @babel/register",
     "test:integration": "dotenv -e envs/test.env -e envs/.env mocha -- 'src/**/*.integration.test.js' --require @babel/register",
+    "test:serve": "dotenv -e envs/test.env -e envs/.env babel-node src/index.js",
+    "test:unit": "export NODE_ENV=test; mocha 'src/**/*.unit.test.js' --require @babel/register",
+    "test:unit:coverage": "nyc --reporter=html --reporter=text yarn run test:unit",
     "watch": "nodemon -w src --exec yarn run serve"
   },
   "repository": {
@@ -59,6 +64,7 @@
     "mocha": "6.2.0",
     "ndb": "^1.0.42",
     "nodemon": "^1.18.9",
+    "nyc": "14.1.1",
     "prettier": "1.18.2",
     "rimraf": "^2.6.3",
     "sinon": "7.4.1",
