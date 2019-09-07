@@ -11,9 +11,13 @@ import {
   checkEmptyPayload,
 } from './middleware'
 import { errorHandler } from './middleware/errorHandler'
+import createUserValidator from './validators/users/create'
 import injectHandlerDependencies from './utils/injectHandlerDependencies'
 
 const handlerToEngineMap = new Map([[createUserHandler, createUserEngine]])
+const handlerToValidatorMap = new Map([
+  [createUserHandler, createUserValidator],
+])
 
 const app = express()
 
@@ -42,6 +46,7 @@ app.post(
     createUserHandler,
     client,
     handlerToEngineMap,
+    handlerToValidatorMap,
     ValidationError
   )
 )
