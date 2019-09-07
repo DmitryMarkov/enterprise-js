@@ -1,14 +1,25 @@
 {
   "name": "enterprise",
   "version": "0.1.0",
-  "description": "",
+  "description": "Sample enterprise full-stack project",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && babel src -d dist",
+    "build": "rimraf dist && babel src -d dist --copy-files",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "serve": "yarn run build && node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "ndb": "ndb",
+    "prettier": "prettier --write src",
+    "serve": "yarn run build && dotenv node dist/index.js",
+    "start": "yarn run watch",
+    "test": "yarn run test:unit && yarn run test:e2e",
+    "test:coverage": "nyc --reporter=html --reporter=text yarn run test",
+    "test:integration:coverage": "nyc --reporter=html --reporter=text yarn run test:integration",
+    "test:e2e:coverage": "nyc --reporter=html --reporter=text yarn run test:e2e",
+    "test:e2e": "./scripts/e2e.test.sh",
+    "test:integration": "dotenv -e envs/test.env -e envs/.env mocha -- 'src/**/*.integration.test.js' --require @babel/register",
+    "test:serve": "dotenv -e envs/test.env -e envs/.env babel-node src/index.js",
+    "test:unit": "export NODE_ENV=test; mocha 'src/**/*.unit.test.js' --require @babel/register",
+    "test:unit:coverage": "nyc --reporter=html --reporter=text yarn run test:unit",
     "watch": "nodemon -w src --exec yarn run serve"
   },
   "repository": {
@@ -26,22 +37,44 @@
     "url": "https://github.com/DmitryMarkov/enterprise-js/issues"
   },
   "homepage": "https://github.com/DmitryMarkov/enterprise-js#readme",
+  "resolutions": {
+    "lodash": ">=4.17.15"
+  },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
     "@babel/plugin-syntax-optional-chaining": "^7.2.0",
     "@babel/preset-env": "^7.3.1",
+    "@babel/register": "^7.0.0",
+    "cross-env": "^5.2.0",
+    "cucumber": "^5.1.0",
+    "dotenv": "^6.2.0",
+    "dotenv-cli": "^1.4.0",
     "eslint": "^5.13.0",
+    "eslint-config-prettier": "^4.1.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "husky": "^1.3.1",
+    "lodash.clonedeep": "4.5.0",
+    "lodash.isequal": "4.5.0",
+    "mocha": "6.2.0",
+    "ndb": "^1.0.42",
     "nodemon": "^1.18.9",
-    "rimraf": "^2.6.3"
+    "nyc": "14.1.1",
+    "prettier": "1.18.2",
+    "rimraf": "^2.6.3",
+    "sinon": "7.4.1",
+    "superagent": "^4.1.0"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.2.5"
+    "@babel/polyfill": "^7.2.5",
+    "ajv": "6.10.0",
+    "body-parser": "^1.18.3",
+    "elasticsearch": "^15.4.1",
+    "express": "^4.16.4"
   }
 }
