@@ -14,6 +14,7 @@
     "test": "yarn run test:unit && yarn run test:e2e",
     "test:e2e": "./scripts/e2e.test.sh",
     "test:unit": "mocha 'src/**/*.test.js' --require @babel/register",
+    "test:integration": "dotenv -e envs/test.env -e envs/.env mocha -- 'src/**/*.integration.test.js' --require @babel/register",
     "watch": "nodemon -w src --exec yarn run serve"
   },
   "repository": {
