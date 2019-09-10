@@ -39,7 +39,8 @@
   },
   "homepage": "https://github.com/DmitryMarkov/enterprise-js#readme",
   "resolutions": {
-    "lodash": ">=4.17.15"
+    "lodash": ">=4.17.15",
+    "set-value": ">=2.0.1"
   },
   "devDependencies": {
     "@babel/cli": "7.6.0",
