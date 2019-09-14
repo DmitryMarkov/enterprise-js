@@ -12,7 +12,7 @@ function errorHandler(err, req, res, next) {
       message: 'Payload should be in JSON format',
     })
   }
-  next()
+  return next()
 }
 
 export { errorHandler }

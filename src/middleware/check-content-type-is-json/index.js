@@ -7,7 +7,7 @@ function checkContentTypeIsJson(req, res, next) {
         'The "Content-Type" header must always be "application/json"',
     })
   }
-  next()
+  return next()
 }
 
 export default checkContentTypeIsJson

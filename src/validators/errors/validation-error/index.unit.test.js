@@ -1,5 +1,5 @@
 import assert from 'assert'
-import ValidationError from '.'
+import ValidationError from './index'
 
 describe('ValidationError', function() {
   it('should be a subclass of Error', function() {

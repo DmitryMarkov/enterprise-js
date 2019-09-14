@@ -2,7 +2,7 @@ import Ajv from 'ajv'
 import profileSchema from '../../schema/users/profile.json'
 import createUserSchema from '../../schema/users/create.json'
 import generateValidationErrorMessage from '../errors/messages'
-import ValidationError from '../errors/validationError'
+import ValidationError from '../errors/validation-error'
 
 function validate(req) {
   const ajvValidate = new Ajv({ allErrors: true })
