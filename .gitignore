@@ -17,7 +17,7 @@ pids
 *.pid.lock
 
 lib-cov
-#.nyc_output
+.nyc_output
 .grunt
 bower_components
 .lock-wscript
