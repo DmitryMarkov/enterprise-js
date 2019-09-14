@@ -1,6 +1,19 @@
 {
-  "env": {
-    "mocha": true
+  "extends": ["standard", "prettier", "prettier/standard"],
+
+  "rules": {
+    "no-underscore-dangle": "off"
   },
-  "extends": ["standard", "prettier", "prettier/standard"]
+  "overrides": [
+    {
+      "files": ["*.test.js"],
+      "env": {
+        "mocha": true
+      },
+      "rules": {
+        "func-names": "off",
+        "prefer-arrow-callback": "off"
+      }
+    }
+  ]
 }
