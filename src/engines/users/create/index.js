@@ -4,14 +4,11 @@ function create(req, db, validate, ValidationError) {
   if (validationResults instanceof ValidationError) {
     return Promise.reject(validationResults)
   }
-  return db
-    .index({
-      index: process.env.ELASTICSEARCH_INDEX,
-      type: 'user',
-      body: req.body,
-    })
-    .then(res => res._id)
-    .catch(() => Promise.reject(new Error('Internal Server Error')))
+  return db.index({
+    index: process.env.ELASTICSEARCH_INDEX,
+    type: 'user',
+    body: req.body,
+  })
 }
 
 export default create

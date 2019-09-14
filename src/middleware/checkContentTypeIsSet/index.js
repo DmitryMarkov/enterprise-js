@@ -1,6 +1,5 @@
 function checkContentTypeIsSet(req, res, next) {
   if (
-    req.headers['content-length'] &&
     req.headers['content-length'] !== '0' &&
     !req.headers['content-type']
   ) {
@@ -11,7 +10,7 @@ function checkContentTypeIsSet(req, res, next) {
         'The "Content-Type" header must be set for requests with a non-empty payload',
     })
   }
-  next()
+  return next()
 }
 
 export default checkContentTypeIsSet
