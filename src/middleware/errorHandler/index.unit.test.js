@@ -1,8 +1,8 @@
 import assert from 'assert'
 import deepClone from 'lodash.clonedeep'
 import deepEqual from 'lodash.isequal'
-import { spy } from 'sinon'
-import { errorHandler } from './index'
+import { spy, stub } from 'sinon'
+import { errorHandler } from '.'
 
 function getValidError(constructor = SyntaxError) {
   const error = new constructor()
@@ -13,105 +13,145 @@ function getValidError(constructor = SyntaxError) {
 }
 
 describe('errorHandler', function() {
+  let err
+  let req
+  let res
+  let next
+  let clonedRes
   describe('When the error is not an instance of SyntaxError', function() {
-    const err = getValidError(Error)
-    const req = {}
-    const res = {}
-    const next = spy()
-    const clonedRes = deepClone(res)
-    errorHandler(err, req, res, next)
+    beforeEach(function() {
+      err = getValidError(Error)
+      req = {}
+      res = {}
+      clonedRes = deepClone(res)
+      next = spy()
+      errorHandler(err, req, res, next)
+    })
 
     it('should not modify res', function() {
       assert(deepEqual(res, clonedRes))
     })
-
-    it('should call next()', function() {
+    it('should call next() once', function() {
       assert(next.calledOnce)
     })
   })
 
   describe('When the error status is not 400', function() {
-    const err = getValidError()
-    err.status = 401
-    const req = {}
-    const res = {}
-    const next = spy()
-    const clonedRes = deepClone(res)
-    errorHandler(err, req, res, next)
+    beforeEach(function() {
+      err = getValidError()
+      err.status = 401
+      req = {}
+      res = {}
+      clonedRes = deepClone(res)
+      next = spy()
+      errorHandler(err, req, res, next)
+    })
 
     it('should not modify res', function() {
       assert(deepEqual(res, clonedRes))
     })
 
-    it('should call next()', function() {
+    it('should call next() once', function() {
       assert(next.calledOnce)
     })
   })
 
   describe('When the error does not contain a `body` property', function() {
-    const err = getValidError()
-    delete err.body
-    const req = {}
-    const res = {}
-    const next = spy()
-    const clonedRes = deepClone(res)
-    errorHandler(err, req, res, next)
+    beforeEach(function() {
+      err = getValidError()
+      delete err.body
+      req = {}
+      res = {}
+      clonedRes = deepClone(res)
+      next = spy()
+      errorHandler(err, req, res, next)
+    })
 
     it('should not modify res', function() {
       assert(deepEqual(res, clonedRes))
     })
 
-    it('should call next()', function() {
+    it('should call next() once', function() {
       assert(next.calledOnce)
     })
   })
 
   describe('When the error type is not `entity.parse.failed`', function() {
-    const err = getValidError()
-    err.type = 'foo'
-    const req = {}
-    const res = {}
-    const next = spy()
-    const clonedRes = deepClone(res)
-    errorHandler(err, req, res, next)
+    beforeEach(function() {
+      err = getValidError()
+      err.type = 'foo'
+      req = {}
+      res = {}
+      clonedRes = deepClone(res)
+      next = spy()
+      errorHandler(err, req, res, next)
+    })
 
     it('should not modify res', function() {
       assert(deepEqual(res, clonedRes))
     })
 
-    it('should call next()', function() {
+    it('should call next() once', function() {
       assert(next.calledOnce)
     })
   })
 
   describe('When the error is a SyntaxError, with a 400 status, has a `body` property set, and has type `entity.parse.failed`', function() {
-    const err = getValidError()
-    const req = {}
-    const res = {
-      status: spy(),
-      set: spy(),
-      json: spy(),
-    }
-    const next = spy()
-    errorHandler(err, req, res, next)
+    let resJsonReturnValue
+    let returnedValue
 
-    it('should set res with a 400 status code', function() {
-      assert(res.status.calledOnce)
-      assert(res.status.calledWithExactly(400))
+    beforeEach(function() {
+      err = getValidError()
+      req = {}
+      resJsonReturnValue = {}
+      res = {
+        status: spy(),
+        set: spy(),
+        json: stub().returns(resJsonReturnValue),
+      }
+      next = spy()
+      returnedValue = errorHandler(err, req, res, next)
     })
 
-    it('should set res with an application/json content-type header', function() {
-      assert(res.set.calledOnce)
-      assert(res.set.calledWithExactly('Content-Type', 'application/json'))
+    describe('should call res.status()', function() {
+      it('once', function() {
+        assert(res.status.calledOnce)
+      })
+      it('with the argument 400', function() {
+        assert(res.status.calledWithExactly(400))
+      })
     })
 
-    it('should set res.json with error code', function() {
-      assert(res.json.calledOnce)
-      assert(
-        res.json.calledWithExactly({
-          message: 'Payload should be in JSON format',
-        })
-      )
+    describe('should call res.set()', function() {
+      it('once', function() {
+        assert(res.set.calledOnce)
+      })
+      it('with the arguments "Content-Type" and "application/json"', function() {
+        assert(
+          res.set.calledWithExactly('Content-Type', 'application/json')
+        )
+      })
+    })
+
+    describe('should call res.json()', function() {
+      it('once', function() {
+        assert(res.json.calledOnce)
+      })
+      it('with the correct error object', function() {
+        assert(
+          res.json.calledWithExactly({
+            message: 'Payload should be in JSON format',
+          })
+        )
+      })
+    })
+
+    xit('should return whatever res.json() returns', function() {
+      assert.strictEqual(returnedValue, resJsonReturnValue)
+    })
+
+    xit('should not call next()', function() {
+      assert(next.notCalled)
     })
   })
 })

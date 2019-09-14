@@ -6,7 +6,7 @@ import elasticsearch from 'elasticsearch'
 import { convertStringToArray, getValidPayload } from './utils'
 
 const client = new elasticsearch.Client({
-  host: `${process.env.ELASTICSEARCH_HOSTNAME}:${process.env.ELASTICSEARCH_PORT}`,
+  host: `${process.env.ELASTICSEARCH_PROTOCOL}://${process.env.ELASTICSEARCH_HOSTNAME}:${process.env.ELASTICSEARCH_PORT}`,
 })
 
 When(

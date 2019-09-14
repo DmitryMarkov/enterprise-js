@@ -50,7 +50,6 @@
     "@babel/preset-env": "7.6.0",
     "@babel/register": "7.6.0",
     "cucumber": "5.1.0",
-    "dotenv": "8.1.0",
     "dotenv-cli": "2.0.1",
     "eslint": "6.4.0",
     "eslint-config-prettier": "6.3.0",
