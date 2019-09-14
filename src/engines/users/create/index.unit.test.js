@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { stub } from 'sinon'
-import ValidationError from '../../../validators/errors/validationError'
+import ValidationError from '../../../validators/errors/validation-error'
 import create from '.'
 
 describe('User Create Engine', function() {

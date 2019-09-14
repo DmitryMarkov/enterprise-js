@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { spy, stub } from 'sinon'
-import ValidationError from '../../../validators/errors/validationError'
+import ValidationError from '../../../validators/errors/validation-error'
 import createUser from './index'
 
 const VALIDATION_ERROR_MESSAGE = 'VALIDATION_ERROR_MESSAGE'

@@ -3,7 +3,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import elasticsearch from 'elasticsearch'
 
-import ValidationError from './validators/errors/validationError'
+import ValidationError from './validators/errors/validation-error'
 import createUserEngine from './engines/users/create'
 import createUserHandler from './handlers/users/create'
 import {
@@ -11,9 +11,9 @@ import {
   checkContentTypeIsSet,
   checkEmptyPayload,
 } from './middleware'
-import { errorHandler } from './middleware/errorHandler'
+import { errorHandler } from './middleware/error-handler'
 import createUserValidator from './validators/users/create'
-import injectHandlerDependencies from './utils/injectHandlerDependencies'
+import injectHandlerDependencies from './utils/inject-handler-dependencies'
 
 const handlerToEngineMap = new Map([[createUserHandler, createUserEngine]])
 

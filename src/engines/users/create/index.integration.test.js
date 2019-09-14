@@ -1,6 +1,6 @@
 import assert from 'assert'
 import elasticsearch from 'elasticsearch'
-import ValidationError from '../../../validators/errors/validationError'
+import ValidationError from '../../../validators/errors/validation-error'
 import createUserValidator from '../../../validators/users/create'
 import create from '.'
 

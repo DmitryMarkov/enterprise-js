@@ -1,5 +1,5 @@
-import checkEmptyPayload from './checkEmptyPayload'
-import checkContentTypeIsSet from './checkContentTypeIsSet'
-import checkContentTypeIsJson from './checkContentTypeIsJson'
+import checkEmptyPayload from './check-empty-payload'
+import checkContentTypeIsSet from './check-content-type-is-set'
+import checkContentTypeIsJson from './check-content-type-is-json'
 
 export { checkContentTypeIsJson, checkContentTypeIsSet, checkEmptyPayload }
