@@ -3,17 +3,22 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import elasticsearch from 'elasticsearch'
 
-import ValidationError from './validators/errors/validation-error'
-import createUserEngine from './engines/users/create'
-import createUserHandler from './handlers/users/create'
 import {
   checkContentTypeIsJson,
   checkContentTypeIsSet,
   checkEmptyPayload,
 } from './middleware'
 import { errorHandler } from './middleware/error-handler'
-import createUserValidator from './validators/users/create'
+
+import ValidationError from './validators/errors/validation-error'
 import injectHandlerDependencies from './utils/inject-handler-dependencies'
+
+// engines
+import createUserEngine from './engines/users/create'
+// handlers
+import createUserHandler from './handlers/users/create'
+// validators
+import createUserValidator from './validators/users/create'
 
 const handlerToEngineMap = new Map([[createUserHandler, createUserEngine]])
 
@@ -45,6 +50,18 @@ app.post(
 
 app.use(errorHandler)
 
-app.listen(process.env.SERVER_PORT, () => {
-  console.log(`API listening on port ${process.env.SERVER_PORT}`)
+const server = app.listen(process.env.SERVER_PORT, async () => {
+  const indexParams = { index: process.env.ELASTICSEARCH_INDEX }
+  const indexExists = await client.indices.exists(indexParams)
+  if (!indexExists) {
+    await client.indices.create(indexParams)
+  }
+  // eslint-disable-next-line no-console
+  console.log(`API server listening on port ${process.env.SERVER_PORT}!`)
+})
+
+process.on('SIGTERM', () => {
+  server.close(() => {
+    process.exit(0)
+  })
 })

@@ -1,10 +1,10 @@
-function createUser(req, res, db, create, validator, ValidationError) {
-  return create(req, db, validator, ValidationError)
+function create(req, res, db, engine, validator, ValidationError) {
+  return engine(req, db, validator, ValidationError)
     .then(
-      result => {
+      userId => {
         res.status(201)
         res.set('Content-Type', 'text/plain')
-        res.send(result._id)
+        res.send(userId)
       },
       err => {
         if (err instanceof ValidationError) {
@@ -22,4 +22,4 @@ function createUser(req, res, db, create, validator, ValidationError) {
     })
 }
 
-export default createUser
+export default create

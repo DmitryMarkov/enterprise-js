@@ -4,11 +4,13 @@ function create(req, db, validate, ValidationError) {
   if (validationResults instanceof ValidationError) {
     return Promise.reject(validationResults)
   }
-  return db.index({
-    index: process.env.ELASTICSEARCH_INDEX,
-    type: 'user',
-    body: req.body,
-  })
+  return db
+    .index({
+      index: process.env.ELASTICSEARCH_INDEX,
+      type: 'user',
+      body: req.body,
+    })
+    .then(result => result._id)
 }
 
 export default create
