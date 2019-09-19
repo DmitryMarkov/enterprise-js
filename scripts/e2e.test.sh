@@ -32,7 +32,7 @@ until ss -lnt | grep -q :$SERVER_PORT; do
 done
 
 # Run the test in the background
-npx cucumber-js spec/cucumber/features --require-module @babel/register --require spec/cucumber/steps
+npx cucumber-js spec/cucumber/features --require-module @babel/register --require spec/cucumber/steps --tags "not @ignored"
 
 # Terminate all processes within the same process group by sending a SIGTERM signal
 kill -15 0

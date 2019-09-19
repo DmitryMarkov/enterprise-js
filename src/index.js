@@ -15,12 +15,17 @@ import injectHandlerDependencies from './utils/inject-handler-dependencies'
 
 // engines
 import createUserEngine from './engines/users/create'
+import deleteUserEngine from './engines/users/delete'
 // handlers
 import createUserHandler from './handlers/users/create'
+import deleteUserHandler from './handlers/users/delete'
 // validators
 import createUserValidator from './validators/users/create'
 
-const handlerToEngineMap = new Map([[createUserHandler, createUserEngine]])
+const handlerToEngineMap = new Map([
+  [createUserHandler, createUserEngine],
+  [deleteUserHandler, deleteUserEngine],
+])
 
 const handlerToValidatorMap = new Map([
   [createUserHandler, createUserValidator],
@@ -41,6 +46,16 @@ app.post(
   '/users/',
   injectHandlerDependencies(
     createUserHandler,
+    client,
+    handlerToEngineMap,
+    handlerToValidatorMap,
+    ValidationError
+  )
+)
+app.delete(
+  '/users/:userId',
+  injectHandlerDependencies(
+    deleteUserHandler,
     client,
     handlerToEngineMap,
     handlerToValidatorMap,

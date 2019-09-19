@@ -1,5 +1,6 @@
 function checkContentTypeIsSet(req, res, next) {
   if (
+    req.headers['content-length'] &&
     req.headers['content-length'] !== '0' &&
     !req.headers['content-type']
   ) {
