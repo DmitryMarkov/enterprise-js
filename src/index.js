@@ -13,18 +13,23 @@ import { errorHandler } from './middleware/error-handler'
 import ValidationError from './validators/errors/validation-error'
 import injectHandlerDependencies from './utils/inject-handler-dependencies'
 
-// engines
-import createUserEngine from './engines/users/create'
-import deleteUserEngine from './engines/users/delete'
 // handlers
 import createUserHandler from './handlers/users/create'
 import deleteUserHandler from './handlers/users/delete'
+import retrieveUserHandler from './handlers/users/retrieve'
+
+// engines
+import createUserEngine from './engines/users/create'
+import deleteUserEngine from './engines/users/delete'
+import retrieveUserEngine from './engines/users/retrieve'
+
 // validators
 import createUserValidator from './validators/users/create'
 
 const handlerToEngineMap = new Map([
   [createUserHandler, createUserEngine],
   [deleteUserHandler, deleteUserEngine],
+  [retrieveUserHandler, retrieveUserEngine],
 ])
 
 const handlerToValidatorMap = new Map([
@@ -52,6 +57,18 @@ app.post(
     ValidationError
   )
 )
+
+app.get(
+  '/users/:userId',
+  injectHandlerDependencies(
+    retrieveUserHandler,
+    client,
+    handlerToEngineMap,
+    handlerToValidatorMap,
+    ValidationError
+  )
+)
+
 app.delete(
   '/users/:userId',
   injectHandlerDependencies(
