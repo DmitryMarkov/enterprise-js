@@ -1,3 +1,4 @@
+@ignored
 Feature: Delete User by ID
 
     Clients should be able to send a request to our API in order to delete an user.
@@ -6,6 +7,7 @@ Feature: Delete User by ID
 
         Given 1 new user is created with random password and email
 
+    @ignored
     Scenario: Delete Self
 
         When the client creates a DELETE request to /users/:userId
@@ -16,6 +18,7 @@ Feature: Delete User by ID
         And sends the request
         Then our API should respond with a 404 HTTP status code
 
+    @ignored
     Scenario: Delete Non-existing User
 
         When the client creates a DELETE request to /users/:userId
