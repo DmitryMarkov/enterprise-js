@@ -17,23 +17,28 @@ import injectHandlerDependencies from './utils/inject-handler-dependencies'
 import createUserHandler from './handlers/users/create'
 import deleteUserHandler from './handlers/users/delete'
 import retrieveUserHandler from './handlers/users/retrieve'
+import searchUserHandler from './handlers/users/search'
 
 // engines
 import createUserEngine from './engines/users/create'
 import deleteUserEngine from './engines/users/delete'
 import retrieveUserEngine from './engines/users/retrieve'
+import searchUserEngine from './engines/users/search'
 
 // validators
 import createUserValidator from './validators/users/create'
+import searchUserValidator from './validators/users/search'
 
 const handlerToEngineMap = new Map([
   [createUserHandler, createUserEngine],
   [deleteUserHandler, deleteUserEngine],
   [retrieveUserHandler, retrieveUserEngine],
+  [searchUserHandler, searchUserEngine],
 ])
 
 const handlerToValidatorMap = new Map([
   [createUserHandler, createUserValidator],
+  [searchUserHandler, searchUserValidator],
 ])
 
 const app = express()
@@ -51,6 +56,17 @@ app.post(
   '/users/',
   injectHandlerDependencies(
     createUserHandler,
+    client,
+    handlerToEngineMap,
+    handlerToValidatorMap,
+    ValidationError
+  )
+)
+
+app.get(
+  '/users/',
+  injectHandlerDependencies(
+    searchUserHandler,
     client,
     handlerToEngineMap,
     handlerToValidatorMap,
