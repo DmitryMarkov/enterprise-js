@@ -1,4 +1,4 @@
-@profile @ignored
+@profile
 Feature: Update User Profile
 
     Background: Create two Users and logs in with the first user's account
@@ -35,9 +35,9 @@ Feature: Update User Profile
 
         Examples:
 
-            | additionalField | message                                                |
-            | foo             | The '.profile' object does not support the field 'foo' |
-            | foo, bar        | The '.profile' object does not support the field 'foo' |
+            | additionalField | message                                                      |
+            | foo             | The '.profile' object does not support the field 'foo'.      |
+            | foo, bar        | The '.profile' object does not support the field 'foo, bar'. |
 
     Scenario Outline: Request Payload with Properties of Unsupported Type
         When the client creates a PATCH request to /users/:userId/profile
@@ -45,7 +45,7 @@ Feature: Update User Profile
         And sends the request
         Then our API should respond with a 400 HTTP status code
         And the payload of the response should be a JSON object
-        And contains a message property which says "The '.profile.<field>' field must be of type <type>"
+        And contains a message property which says "The '.profile.<field>' field must be of type <type>."
 
         Examples:
             | field       | type   |

@@ -16,9 +16,11 @@ function replace(req, res, db, engine, validator, ValidationError) {
         res.set('Content-Type', 'application/json')
         return res.json({ message: err.message })
       }
-      res.status(500)
-      res.set('Content-Type', 'application/json')
-      return res.json({ message: 'Internal Server Error' })
+      if (!res.headersSent) {
+        res.status(500)
+        res.set('Content-Type', 'application/json')
+        return res.json({ message: 'Internal Server Error' })
+      }
     })
 }
 

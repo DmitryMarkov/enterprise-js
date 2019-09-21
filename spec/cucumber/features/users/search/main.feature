@@ -1,4 +1,3 @@
-@ignored
 Feature: Search Users
 
     Clients should be able to send a request to our API in order to search users based on parameters.
