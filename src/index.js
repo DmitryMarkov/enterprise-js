@@ -62,21 +62,20 @@ app.use(checkContentTypeIsSet)
 app.use(checkContentTypeIsJson)
 app.use(bodyParser.json({ limit: 1e6 }))
 
-app.post(
+app.get(
   '/users/',
   injectHandlerDependencies(
-    createUserHandler,
+    searchUserHandler,
     client,
     handlerToEngineMap,
     handlerToValidatorMap,
     ValidationError
   )
 )
-
-app.get(
+app.post(
   '/users/',
   injectHandlerDependencies(
-    searchUserHandler,
+    createUserHandler,
     client,
     handlerToEngineMap,
     handlerToValidatorMap,

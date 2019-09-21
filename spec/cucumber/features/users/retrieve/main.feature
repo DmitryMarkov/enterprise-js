@@ -7,7 +7,6 @@ Feature: Retrieve User by ID
         And sends the request
         Then our API should respond with a 404 HTTP status code
 
-    @ignored
     Scenario: Retrieve Existing User
         Given the client creates a POST request to /users
         And attaches a valid Create User payload
