@@ -1,8 +1,5 @@
 # enterprise-js
 
-## Dev
+## Prerequisites
 
-Install extras:
-
-* Java
-* Elastic Search
+* Elastic Search 7.3.x
