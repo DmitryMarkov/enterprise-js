@@ -1,8 +1,7 @@
+![Travis CI](https://travis-ci.org/DmitryMarkov/enterprise-js.svg?branch=master)
+
 # enterprise-js
 
-## Dev
+## Prerequisites
 
-Install extras:
-
-* Java
-* Elastic Search
+* Elastic Search 7.3.x
