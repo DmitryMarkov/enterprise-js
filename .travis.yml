@@ -11,7 +11,7 @@ before_install:
   #  - sudo systemctl restart elasticsearch
   - sudo rm -rf /var/run/elasticsearch
   - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.3.1-amd64.deb
-  - sudo dpkg -i --force-confnew elasticsearch-7.3.1-amd64.deb
+  - sudo dpkg -i --force-confnew elasticsearch-7.2.0-amd64.deb
   - sudo service elasticsearch restart
 before_script:
   - sleep 30
