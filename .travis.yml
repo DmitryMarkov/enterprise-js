@@ -8,7 +8,7 @@ before_install:
   - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.3.2-amd64.deb.sha512
   - shasum -a 512 -c elasticsearch-7.3.2-amd64.deb.sha512
   - sudo dpkg -i --force-confnew elasticsearch-7.3.2-amd64.deb
-  - sudo service elasticsearch restart
+  - sudo systemctl restart elasticsearch.service
 before_script:
   - sleep 30
   - rtn=$(curl "http://localhost:9200/?pretty")
