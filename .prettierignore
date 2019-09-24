@@ -1,6 +1,7 @@
 coverage/
 build/
 dist/
+Jenkinsfile
 node_modules/
 public/
 uploads/
