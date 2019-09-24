@@ -10,8 +10,8 @@ before_install:
   - sudo dpkg -i --force-confnew elasticsearch-7.3.2-amd64.deb
   - sudo service elasticsearch restart
 before_script:
-  - sleep 15
-  - rtn=$(curl http://localhost:9200/?pretty)
+  - sleep 30
+  - rtn=$(curl "http://localhost:9200/?pretty")
   - echo $rtn
 env:
   global:
