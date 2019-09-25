@@ -15,6 +15,13 @@ node {
               stage('Waiting') {
                 sh 'until curl --silent $DB_PORT_9200_TCP_ADDR:$ELASTICSEARCH_PORT -w "" -o /dev/null; do sleep 1; done'
               }
+              stage('Install yarn') {
+                sh 'curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -'
+                sh 'yarn --version'
+              }
+              stage('Install deps') {
+                sh 'npm install'
+              }
               stage('Unit Tests') {
                 sh 'ELASTICSEARCH_HOSTNAME=$DB_PORT_9200_TCP_ADDR npm run test:unit'
               }
