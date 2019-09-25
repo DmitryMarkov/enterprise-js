@@ -62,4 +62,16 @@ describe('generateValidationErrorMessage', function() {
       "The '.test.path' object does not support the field 'email'."
     assert.strictEqual(actualErrorMessage, expectedErrorMessage)
   })
+  it('should return the correct string when error.keyword is "pattern"', function() {
+    const errors = [
+      {
+        keyword: 'pattern',
+        dataPath: '.test.path',
+      },
+    ]
+    const actualErrorMessage = generateValidationErrorMessage(errors)
+    const expectedErrorMessage =
+      "The '.test.path' field should be a valid bcrypt digest"
+    assert.strictEqual(actualErrorMessage, expectedErrorMessage)
+  })
 })

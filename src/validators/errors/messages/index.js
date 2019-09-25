@@ -12,6 +12,9 @@ function generateValidationErrorMessage(errors, pathPrefix = '') {
   if (error.keyword === 'additionalProperties') {
     return `The '${pathPrefix}${error.dataPath}' object does not support the field '${error.params.additionalProperty}'.`
   }
+  if (error.keyword === 'pattern') {
+    return `The '${pathPrefix}${error.dataPath}' field should be a valid bcrypt digest`
+  }
   return 'The object is not valid'
 }
 

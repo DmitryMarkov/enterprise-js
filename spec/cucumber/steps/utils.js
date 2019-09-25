@@ -5,8 +5,10 @@ function getValidPayload(type, context = {}) {
   switch (lowercaseType) {
     case 'create user':
       return {
-        email: 'e@ma.il',
-        password: 'password',
+        email: context.email || 'e@ma.il',
+        digest:
+          context.digest ||
+          '$2y$10$CaHxr1YxVTQeOedwHeuZT.sJHX8X3pG1wJL7HKjMCfZB/oVjnqpk2',
       }
     case 'replace user profile':
       return {
