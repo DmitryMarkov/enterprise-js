@@ -125,6 +125,18 @@ When(/^set (?:"|')(.+)(?:"|') as a query parameter$/, function(
   return this.request.query(queryString)
 })
 
+When(/^set a valid (.+) query string$/, function(payloadType) {
+  this.query = getValidPayload(payloadType, this)
+  this.request.query(this.query)
+})
+
+When(
+  /^set the HTTP header field (?:"|')?([\w-]+)(?:"|')? to (?:"|')?(.+)(?:"|')?$/,
+  function(headerName, value) {
+    this.request.set(headerName, value)
+  }
+)
+
 When(/^sends the request$/, function() {
   return this.request
     .then(response => {

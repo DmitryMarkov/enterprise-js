@@ -1,5 +1,6 @@
 import '@babel/polyfill'
 import express from 'express'
+import { getSalt } from 'bcryptjs'
 import bodyParser from 'body-parser'
 import elasticsearch from 'elasticsearch'
 
@@ -12,8 +13,10 @@ import { errorHandler } from './middleware/error-handler'
 
 import ValidationError from './validators/errors/validation-error'
 import injectHandlerDependencies from './utils/inject-handler-dependencies'
+import generateFakeSalt from './utils/generate-fake-salt'
 
 // handlers
+import retrieveSaltHandler from './handlers/auth/salt/retrieve'
 import createUserHandler from './handlers/users/create'
 import deleteUserHandler from './handlers/users/delete'
 import retrieveUserHandler from './handlers/users/retrieve'
@@ -22,6 +25,7 @@ import replaceProfileHandler from './handlers/profile/replace'
 import updateProfileHandler from './handlers/profile/update'
 
 // engines
+import retrieveSaltEngine from './engines/auth/salt/retrieve'
 import createUserEngine from './engines/users/create'
 import deleteUserEngine from './engines/users/delete'
 import retrieveUserEngine from './engines/users/retrieve'
@@ -36,6 +40,7 @@ import replaceProfileValidator from './validators/profile/replace'
 import updateProfileValidator from './validators/profile/update'
 
 const handlerToEngineMap = new Map([
+  [retrieveSaltHandler, retrieveSaltEngine],
   [createUserHandler, createUserEngine],
   [deleteUserHandler, deleteUserEngine],
   [retrieveUserHandler, retrieveUserEngine],
@@ -63,7 +68,19 @@ app.use(checkContentTypeIsJson)
 app.use(bodyParser.json({ limit: 1e6 }))
 
 app.get(
-  '/users/',
+  '/salt',
+  injectHandlerDependencies(
+    retrieveSaltHandler,
+    client,
+    handlerToEngineMap,
+    handlerToValidatorMap,
+    getSalt,
+    generateFakeSalt
+  )
+)
+
+app.get(
+  '/users',
   injectHandlerDependencies(
     searchUserHandler,
     client,
@@ -73,7 +90,7 @@ app.get(
   )
 )
 app.post(
-  '/users/',
+  '/users',
   injectHandlerDependencies(
     createUserHandler,
     client,
