@@ -90,6 +90,22 @@ Then(
 )
 
 Then(
+  /^the ([\w.]+) property of the response should be the same as context\.([\w.]+), excluding ([\w.]+) property$/,
+  function(responseProperty, contextProperty, excludedProperty) {
+    const excludedContextPayload = objectPath.get(this, contextProperty)
+    delete excludedContextPayload[excludedProperty]
+
+    assert.deepStrictEqual(
+      objectPath.get(
+        this.responsePayload,
+        responseProperty === 'root' ? '' : responseProperty
+      ),
+      excludedContextPayload
+    )
+  }
+)
+
+Then(
   /^the ([\w.]+) property of the response should be an? ([\w.]+) with the value (.+)$/,
   function(responseProperty, expectedResponseType, expectedResponse) {
     const parsedExpectedResponse = (function() {
