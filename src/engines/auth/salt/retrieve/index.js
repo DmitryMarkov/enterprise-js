@@ -18,7 +18,7 @@ function retrieveSalt(req, db, getSalt, generateFakeSalt) {
       _source_includes: 'digest',
     })
     .then(res => {
-      console.log(res)
+      //   console.log(res)
       const user = res.hits.hits[0]
       return user
         ? user._source.digest

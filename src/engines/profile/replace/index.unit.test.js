@@ -19,6 +19,9 @@ describe('Engine - Profile - Replace', function() {
       params: {
         userId: USER_ID,
       },
+      user: {
+        id: USER_ID,
+      },
     }
     db = { update: generateESClientUpdateStub.success() }
   })

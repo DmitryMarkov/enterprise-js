@@ -10,6 +10,7 @@ Feature: Retrieve Salt and Parameters
         And the payload of the response should be a JSON object
         And contains a message property which says "The email field must be specified"
 
+    @ignored
     Scenario: Send Digest and Retrieve Salt
 
         Given 1 new user is created with random password and email
