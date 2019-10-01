@@ -1,7 +1,9 @@
-import assert from 'assert'
+import assert, { AssertionError } from 'assert'
 import { When, Then } from 'cucumber'
 import elasticsearch from 'elasticsearch'
+import { decode } from 'jsonwebtoken'
 import objectPath from 'object-path'
+import { convertStringToArray } from './utils'
 
 const client = new elasticsearch.Client({
   host: `${process.env.ELASTICSEARCH_HOSTNAME}:${process.env.ELASTICSEARCH_PORT}`,
@@ -90,6 +92,38 @@ Then(
 )
 
 Then(
+  /^the ([\w.]+) property of the response should be the same as context\.([\w.]+), excluding ([\w.]+) property$/,
+  function(responseProperty, contextProperty, excludedProperty) {
+    const excludedContextPayload = objectPath.get(this, contextProperty)
+    delete excludedContextPayload[excludedProperty]
+
+    assert.deepStrictEqual(
+      objectPath.get(
+        this.responsePayload,
+        responseProperty === 'root' ? '' : responseProperty
+      ),
+      excludedContextPayload
+    )
+  }
+)
+
+Then(
+  /^the ([\w.]+) property of the response should be the same as context\.([\w.]+) but without the ([\w.]+) fields?$/,
+  function(responseProperty, contextProperty, missingFields) {
+    const contextObject = objectPath.get(this, contextProperty)
+    const fieldsToDelete = convertStringToArray(missingFields)
+    fieldsToDelete.forEach(field => delete contextObject[field])
+    assert.deepStrictEqual(
+      objectPath.get(
+        this.responsePayload,
+        responseProperty === 'root' ? '' : responseProperty
+      ),
+      contextObject
+    )
+  }
+)
+
+Then(
   /^the ([\w.]+) property of the response should be an? ([\w.]+) with the value (.+)$/,
   function(responseProperty, expectedResponseType, expectedResponse) {
     const parsedExpectedResponse = (function() {
@@ -122,3 +156,34 @@ Then(
 Then(/^the response should contain (\d+) items$/, function(count) {
   assert.strictEqual(this.responsePayload.length, count)
 })
+
+Then(/^the payload should be equal to context.([\w-]+)$/, function(
+  contextpath
+) {
+  assert.strictEqual(
+    this.responsePayload,
+    objectPath.get(this, contextpath)
+  )
+})
+
+Then(
+  /^the response string should satisfy the regular expression (.+)$/,
+  function(regex) {
+    const re = new RegExp(regex.trim().replace(/^\/|\/$/g, ''))
+    assert.strictEqual(re.test(this.responsePayload), true)
+  }
+)
+
+Then(
+  /^the JWT payload should have a claim with name (\w+) equal to context.([\w-]+)$/,
+  function(claimName, contextPath) {
+    const decodedTokenPayload = decode(this.responsePayload)
+    if (decodedTokenPayload === null) {
+      throw new AssertionError()
+    }
+    assert.strictEqual(
+      decodedTokenPayload[claimName],
+      objectPath.get(this, contextPath)
+    )
+  }
+)

@@ -42,7 +42,7 @@ describe('Engine - User - Search', function() {
         assert.deepStrictEqual(db.search.getCall(0).args[0], {
           index: process.env.ELASTICSEARCH_INDEX,
           type: 'user',
-          _source_excludes: 'password',
+          _source_excludes: 'digest',
         })
       })
     })
@@ -59,7 +59,7 @@ describe('Engine - User - Search', function() {
             index: process.env.ELASTICSEARCH_INDEX,
             type: 'user',
             q: SEARCH_TERM,
-            _source_excludes: 'password',
+            _source_excludes: 'digest',
           })
         })
       })

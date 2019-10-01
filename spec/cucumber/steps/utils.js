@@ -3,10 +3,17 @@ import objectPath from 'object-path'
 function getValidPayload(type, context = {}) {
   const lowercaseType = type.toLowerCase()
   switch (lowercaseType) {
+    case 'get salt':
+      return {
+        email: context.email || 'e@ma.il',
+      }
+    case 'login':
     case 'create user':
       return {
-        email: 'e@ma.il',
-        password: 'password',
+        email: context.email || 'e@ma.il',
+        digest:
+          context.digest ||
+          '$2y$10$CaHxr1YxVTQeOedwHeuZT.sJHX8X3pG1wJL7HKjMCfZB/oVjnqpk2',
       }
     case 'replace user profile':
       return {

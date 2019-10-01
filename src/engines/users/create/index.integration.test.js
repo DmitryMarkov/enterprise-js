@@ -22,7 +22,8 @@ describe('Engine - User - Create', function() {
       const req = {
         body: {
           email: 'e@ma.il',
-          password: 'password',
+          digest:
+            '$2y$10$CaHxr1YxVTQeOedwHeuZT.sJHX8X3pG1wJL7HKjMCfZB/oVjnqpk2',
           profile: {},
         },
       }

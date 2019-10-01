@@ -10,7 +10,7 @@ before_install:
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
 before_script:
-  - sleep 20
+  - sleep 30
   - rtn=$(curl "http://localhost:9200/?pretty")
   - echo $rtn
 env:

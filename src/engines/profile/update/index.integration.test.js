@@ -7,7 +7,7 @@ import update from '.'
 const USER_ID = 'TEST_USER_ID'
 const ORIGINAL_USER_OBJ = {
   email: 'e@ma.il',
-  password: 'hunter2',
+  digest: '$2y$10$CaHxr1YxVTQeOedwHeuZT.sJHX8X3pG1wJL7HKjMCfZB/oVjnqpk2',
   profile: {
     summary: 'test',
     bio: 'test',
@@ -15,7 +15,7 @@ const ORIGINAL_USER_OBJ = {
 }
 const NEW_USER_OBJ = {
   email: 'e@ma.il',
-  password: 'hunter2',
+  digest: '$2y$10$CaHxr1YxVTQeOedwHeuZT.sJHX8X3pG1wJL7HKjMCfZB/oVjnqpk2',
   profile: {
     summary: 'summary',
     bio: 'test',
@@ -44,6 +44,9 @@ describe('Engine - Profile - Update', function() {
         },
         params: {
           userId: USER_ID,
+        },
+        user: {
+          id: USER_ID,
         },
       }
     })

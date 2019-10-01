@@ -17,6 +17,7 @@ describe('generateValidationErrorMessage', function() {
       "The '.test.path.property' field is missing."
     assert.strictEqual(actualErrorMessage, expectedErrorMessage)
   })
+
   it('should return the correct string when error.keyword is "type"', function() {
     const errors = [
       {
@@ -32,6 +33,20 @@ describe('generateValidationErrorMessage', function() {
       "The '.test.path' field must be of type string."
     assert.strictEqual(actualErrorMessage, expectedErrorMessage)
   })
+
+  it('should return the correct string when error.keyword is "pattern"', function() {
+    const errors = [
+      {
+        keyword: 'pattern',
+        dataPath: '.test.path',
+      },
+    ]
+    const actualErrorMessage = generateValidationErrorMessage(errors)
+    const expectedErrorMessage =
+      "The '.test.path' field should be a valid bcrypt digest"
+    assert.strictEqual(actualErrorMessage, expectedErrorMessage)
+  })
+
   it('should return the correct string when error.keyword is "format"', function() {
     const errors = [
       {
@@ -47,6 +62,7 @@ describe('generateValidationErrorMessage', function() {
       "The '.test.path' field must be a valid email."
     assert.strictEqual(actualErrorMessage, expectedErrorMessage)
   })
+
   it('should return the correct string when error.keyword is "additionalProperties"', function() {
     const errors = [
       {
@@ -60,6 +76,19 @@ describe('generateValidationErrorMessage', function() {
     const actualErrorMessage = generateValidationErrorMessage(errors)
     const expectedErrorMessage =
       "The '.test.path' object does not support the field 'email'."
+    assert.strictEqual(actualErrorMessage, expectedErrorMessage)
+  })
+
+  it('should return the correct string when error.keyword is "pattern"', function() {
+    const errors = [
+      {
+        keyword: 'pattern',
+        dataPath: '.test.path',
+      },
+    ]
+    const actualErrorMessage = generateValidationErrorMessage(errors)
+    const expectedErrorMessage =
+      "The '.test.path' field should be a valid bcrypt digest"
     assert.strictEqual(actualErrorMessage, expectedErrorMessage)
   })
 })

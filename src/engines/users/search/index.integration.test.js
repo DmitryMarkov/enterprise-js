@@ -12,7 +12,7 @@ const SEARCH_TERM = 'apple banana carrot'
 const USER_ID = 'TEST_USER_ID'
 const USER_OBJ = {
   email: 'e@ma.il',
-  password: 'hunter2',
+  digest: '$2y$10$CaHxr1YxVTQeOedwHeuZT.sJHX8X3pG1wJL7HKjMCfZB/oVjnqpk2',
   profile: {
     summary: SEARCH_TERM,
   },

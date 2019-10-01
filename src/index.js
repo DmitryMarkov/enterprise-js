@@ -1,9 +1,12 @@
 import '@babel/polyfill'
 import express from 'express'
+import { getSalt } from 'bcryptjs'
 import bodyParser from 'body-parser'
 import elasticsearch from 'elasticsearch'
+import { sign } from 'jsonwebtoken'
 
 import {
+  authenticate,
   checkContentTypeIsJson,
   checkContentTypeIsSet,
   checkEmptyPayload,
@@ -12,8 +15,11 @@ import { errorHandler } from './middleware/error-handler'
 
 import ValidationError from './validators/errors/validation-error'
 import injectHandlerDependencies from './utils/inject-handler-dependencies'
+import generateFakeSalt from './utils/generate-fake-salt'
 
 // handlers
+import loginHandler from './handlers/auth/login'
+import retrieveSaltHandler from './handlers/auth/salt/retrieve'
 import createUserHandler from './handlers/users/create'
 import deleteUserHandler from './handlers/users/delete'
 import retrieveUserHandler from './handlers/users/retrieve'
@@ -22,6 +28,8 @@ import replaceProfileHandler from './handlers/profile/replace'
 import updateProfileHandler from './handlers/profile/update'
 
 // engines
+import loginEngine from './engines/auth/login'
+import retrieveSaltEngine from './engines/auth/salt/retrieve'
 import createUserEngine from './engines/users/create'
 import deleteUserEngine from './engines/users/delete'
 import retrieveUserEngine from './engines/users/retrieve'
@@ -30,12 +38,15 @@ import replaceProfileEngine from './engines/profile/replace'
 import updateProfileEngine from './engines/profile/update'
 
 // validators
+import loginValidator from './validators/auth/login'
 import createUserValidator from './validators/users/create'
 import searchUserValidator from './validators/users/search'
 import replaceProfileValidator from './validators/profile/replace'
 import updateProfileValidator from './validators/profile/update'
 
 const handlerToEngineMap = new Map([
+  [loginHandler, loginEngine],
+  [retrieveSaltHandler, retrieveSaltEngine],
   [createUserHandler, createUserEngine],
   [deleteUserHandler, deleteUserEngine],
   [retrieveUserHandler, retrieveUserEngine],
@@ -45,6 +56,7 @@ const handlerToEngineMap = new Map([
 ])
 
 const handlerToValidatorMap = new Map([
+  [loginHandler, loginValidator],
   [createUserHandler, createUserValidator],
   [searchUserHandler, searchUserValidator],
   [replaceProfileHandler, replaceProfileValidator],
@@ -61,9 +73,34 @@ app.use(checkEmptyPayload)
 app.use(checkContentTypeIsSet)
 app.use(checkContentTypeIsJson)
 app.use(bodyParser.json({ limit: 1e6 }))
+app.use(authenticate)
 
 app.get(
-  '/users/',
+  '/salt',
+  injectHandlerDependencies(
+    retrieveSaltHandler,
+    client,
+    handlerToEngineMap,
+    handlerToValidatorMap,
+    getSalt,
+    generateFakeSalt
+  )
+)
+
+app.post(
+  '/login',
+  injectHandlerDependencies(
+    loginHandler,
+    client,
+    handlerToEngineMap,
+    handlerToValidatorMap,
+    ValidationError,
+    sign
+  )
+)
+
+app.get(
+  '/users',
   injectHandlerDependencies(
     searchUserHandler,
     client,
@@ -73,7 +110,7 @@ app.get(
   )
 )
 app.post(
-  '/users/',
+  '/users',
   injectHandlerDependencies(
     createUserHandler,
     client,
