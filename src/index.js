@@ -1,7 +1,9 @@
 import '@babel/polyfill'
+import fs from 'fs'
 import express from 'express'
 import { getSalt } from 'bcryptjs'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import elasticsearch from 'elasticsearch'
 import { sign } from 'jsonwebtoken'
 
@@ -68,6 +70,9 @@ const app = express()
 const client = new elasticsearch.Client({
   host: `${process.env.ELASTICSEARCH_PROTOCOL}://${process.env.ELASTICSEARCH_HOSTNAME}:${process.env.ELASTICSEARCH_PORT}`,
 })
+
+// middlware
+app.use(cors())
 
 app.use(checkEmptyPayload)
 app.use(checkContentTypeIsSet)
@@ -162,6 +167,19 @@ app.patch(
     ValidationError
   )
 )
+
+app.get('/openapi.yaml', (req, res, next) => {
+  fs.readFile(`${__dirname}/openapi.yaml`, (err, file) => {
+    if (err) {
+      res.status(500)
+      res.end()
+      return next()
+    }
+    res.write(file)
+    res.end()
+    return next()
+  })
+})
 
 app.use(errorHandler)
 
